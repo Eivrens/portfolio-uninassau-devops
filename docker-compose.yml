@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  db-portfolio:
+    image: mysql:8.0
+    container_name: db-portfolio
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database-portfolioAPP
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - nw-portfolio
+
+  backend-portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-portfolio
+    ports:
+      - "4444:4444"
+      - "5555:5555"
+    environment:
+      - DATABASE_URL=mysql://root:root@db-portfolio:3306/database-portfolioAPP
+      - JWT_SECRET=profadilsonmimda5pontosnaav1
+    depends_on:
+      - db-portfolio
+    networks:
+      - nw-portfolio
+
+volumes:
+  mysql_data:
+
+networks:
+  nw-portfolio:
